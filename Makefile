@@ -1,0 +1,2 @@
+gendiff:
+	poetry run gendiff
