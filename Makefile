@@ -12,3 +12,6 @@ publish:
 
 package-install:
 	python -m pip install dist/*.whl
+
+make lint:
+	poetry run flake8 gendiff

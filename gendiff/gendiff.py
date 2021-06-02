@@ -11,11 +11,11 @@ def generate_diff(data1, data2):
     for key in sorted(keys):
         if key in data1 and key in data2:
             if data1.get(key) == data2.get(key):
-                print(f'  {key}: {data1.get(key).lower()}')
+                print(f'  {key}: {data1.get(key)}')
             else:
-                print(f'- {key}: {data1.get(key).lower()}')
-                print(f'+ {key}: {data2.get(key).lower()}')
+                print(f'- {key}: {data1.get(key)}')
+                print(f'+ {key}: {data2.get(key)}')
         if key in data1 and key not in data2:
-            print(f'- {key}: {data1.get(key).lower()}')
+            print(f'- {key}: {data1.get(key)}')
         if key in data2 and key not in data1:
-            print(f'+ {key}: {data2.get(key).lower()}')
+            print(f'+ {key}: {data2.get(key)}')
