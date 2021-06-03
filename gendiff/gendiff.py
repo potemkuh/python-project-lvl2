@@ -8,14 +8,20 @@ def create_list_key(dict1, dict2):
 
 def generate_diff(data1, data2):
     keys = create_list_key(data1, data2)
+    result_str = '{\n'
     for key in sorted(keys):
+        if isinstance(data1.get(key), bool):
+            data1[key] = str(data1.get(key)).lower()
+        if isinstance(data2.get(key), bool):
+            data2[key] = str(data2.get(key)).lower()
         if key in data1 and key in data2:
             if data1.get(key) == data2.get(key):
-                print(f'  {key}: {data1.get(key)}')
+                result_str += f'    {key}: {data1.get(key)}\n'
             else:
-                print(f'- {key}: {data1.get(key)}')
-                print(f'+ {key}: {data2.get(key)}')
+                result_str += f'  - {key}: {data1.get(key)}\n'
+                result_str += f'  + {key}: {data2.get(key)}\n'
         if key in data1 and key not in data2:
-            print(f'- {key}: {data1.get(key)}')
-        if key in data2 and key not in data1:
-            print(f'+ {key}: {data2.get(key)}')
+            result_str += f'  - {key}: {data1.get(key)}\n'
+        if key not in data1 and key in data2:
+            result_str += f'  + {key}: {data2.get(key)}\n'
+    return result_str + '}'
