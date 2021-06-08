@@ -1,3 +1,10 @@
+import json
+
+
+dict1 = json.load(open('gendiff/files/file3.json','r'))
+dict2 = json.load(open('gendiff/files/file4.json','r'))
+
+
 def create_list_key(dict1, dict2):
     keys1 = list(dict1.keys())
     keys2 = list(dict2.keys())
@@ -25,3 +32,5 @@ def generate_diff(data1, data2):
         if key not in data1 and key in data2:
             result_str += f'  + {key}: {data2.get(key)}\n'
     return result_str + '}'
+
+print(create_list_key(dict1, dict2))
