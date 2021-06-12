@@ -1,10 +1,3 @@
-import json
-
-
-dict1 = json.load(open('gendiff/files/file3.json','r'))
-dict2 = json.load(open('gendiff/files/file4.json','r'))
-
-
 def create_list_key(dict1, dict2):
     keys1 = list(dict1.keys())
     keys2 = list(dict2.keys())
@@ -13,24 +6,61 @@ def create_list_key(dict1, dict2):
     return set(keys1 + keys2)
 
 
-def generate_diff(data1, data2):
-    keys = create_list_key(data1, data2)
-    result_str = '{\n'
+def calculate_diff(dict1, dict2):
+    keys = create_list_key(dict1, dict2)
+    result = list()
     for key in sorted(keys):
-        if isinstance(data1.get(key), bool):
-            data1[key] = str(data1.get(key)).lower()
-        if isinstance(data2.get(key), bool):
-            data2[key] = str(data2.get(key)).lower()
-        if key in data1 and key in data2:
-            if data1.get(key) == data2.get(key):
-                result_str += f'    {key}: {data1.get(key)}\n'
-            else:
-                result_str += f'  - {key}: {data1.get(key)}\n'
-                result_str += f'  + {key}: {data2.get(key)}\n'
-        if key in data1 and key not in data2:
-            result_str += f'  - {key}: {data1.get(key)}\n'
-        if key not in data1 and key in data2:
-            result_str += f'  + {key}: {data2.get(key)}\n'
-    return result_str + '}'
+        if key not in dict1:
+            result.append({
+                        'key': key,
+                        'type': 'added',
+                        'value': dict2.get(key)
+                            })
+        if key not in dict2:
+            result.append({
+                        'key': key,
+                        'type': 'remove',
+                        'value': dict1.get(key)
+                            })
+        if key in dict1 and key in dict2:
+            result.append({
+                        'key': key,
+                        'type': 'added',
+                        'value': dict2.get(key)
+            })
+            result.append({
+                        'key': key,
+                        'type': 'remove',
+                        'value': dict1.get(key)
+            })
+        if isinstance(dict1.get(key), dict):
+            if isinstance(dict2.get(key), dict):
+                result.append({
+                        'key': key,
+                        'type': 'pass',
+                        'child': calculate_diff(dict1[key], dict2[key])
+                })
+    return result
 
-print(create_list_key(dict1, dict2))
+
+def generate_diff(data1, data2):
+    keys = calculate_diff(data1, data2)
+    my_print(keys, data1, data2)
+
+
+
+def my_print(keys, data1, data2):
+    result_str = '{\n'
+    for key in keys:
+        if key['type'] == 'added':
+            result_str += f' + {key}: {data2.get(key)}\n'
+        if key['type'] == 'remove':
+            result_str += f' - {key}: {data1.get(key)}\n'
+        if key['type'] == 'pass':
+            generate_diff(data1.get(key), data2.get(key))
+            result_str += ' '
+            if key['type'] == 'added':
+                result_str += f' + {key}: {data2.get(key)}\n'
+            if key['type'] == 'remove':
+                result_str += f' - {key}: {data1.get(key)}\n'
+    return result_str + '}'
