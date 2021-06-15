@@ -10,41 +10,45 @@ def calculate_diff(dict1, dict2):
     keys = create_list_key(dict1, dict2)
     result = list()
     for key in sorted(keys):
-        if key not in dict1:
-            result.append({
-                        'key': key,
-                        'type': 'added',
-                        'value': dict2.get(key)
-                            })
         if key not in dict2:
             result.append({
-                        'key': key,
-                        'type': 'remove',
-                        'value': dict1.get(key)
-                            })
+                'key': key,
+                'state': 'minus',
+                'value': dict1.get(key)
+            })
+        if key not in dict1:
+            result.append({
+                'key': key,
+                'state': 'plus',
+                'value': dict2.get(key)
+            })
         if key in dict1 and key in dict2:
-            result.append({
-                        'key': key,
-                        'type': 'added',
-                        'value': dict2.get(key)
-            })
-            result.append({
-                        'key': key,
-                        'type': 'remove',
-                        'value': dict1.get(key)
-            })
-        if isinstance(dict1.get(key), dict):
-            if isinstance(dict2.get(key), dict):
+            if dict1.get(key) != dict2.get(key):
                 result.append({
-                        'key': key,
-                        'type': 'pass',
-                        'child': calculate_diff(dict1[key], dict2[key])
+                'key': key,
+                'state': 'minus',
+                'value': dict1[key]
                 })
+                result.append({
+                'key': key,
+                'state': 'plus',
+                'value': dict2[key]
+                })
+            else:
+                result.append({
+                'key': key,
+                'state': 'pass',
+                'value': dict1[key]
+            })
+        if isinstance(dict1, dict):
+            if isinstance(dict2, dict):
+                calculate_diff(dict1[key], dict2[key])
     return result
 
 
 def generate_diff(data1, data2):
     keys = calculate_diff(data1, data2)
+    print(keys)
     my_print(keys, data1, data2)
 
 
@@ -57,7 +61,7 @@ def my_print(keys, data1, data2):
         if key['type'] == 'remove':
             result_str += f' - {key}: {data1.get(key)}\n'
         if key['type'] == 'pass':
-            generate_diff(data1.get(key), data2.get(key))
+            my_print(data1.get(key), data2.get(key))
             result_str += ' '
             if key['type'] == 'added':
                 result_str += f' + {key}: {data2.get(key)}\n'
