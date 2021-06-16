@@ -9,7 +9,7 @@ def create_list_key(dict1, dict2):
 def calculate_diff(dict1, dict2):
     keys = create_list_key(dict1, dict2)
     result = list()
-    print(keys)
+    #print(keys)
     for key in sorted(keys):
         if key not in dict2:
             result.append({
@@ -37,12 +37,12 @@ def calculate_diff(dict1, dict2):
                 'key': key,
                 'state': 'minus',
                 'value': dict1[key]
-                })
+            })
                 result.append({
                 'key': key,
                 'state': 'plus',
                 'value': dict2[key]
-                })
+            })
             else:
                 result.append({
                 'key': key,
@@ -54,65 +54,60 @@ def calculate_diff(dict1, dict2):
                 calculate_diff(dict1[key], dict2[key])
         elif key not in dict2:
             result.append({
-        'key': key,
-        'state': 'minus',
-        'value': dict1.get(key)
-    })
+            'key': key,
+            'state': 'minus',
+            'value': dict1.get(key)
+        })
         elif key not in dict1:
             result.append({
-        'key': key,
-        'state': 'plus',
-        'value': dict2.get(key)
-    })
+            'key': key,
+            'state': 'plus',
+            'value': dict2.get(key)
+        })
         elif isinstance(dict1[key], dict):
             if isinstance(dict2[key], dict):
                 result.append({
-            'key': key,
-            'state': 'NESTED',
-            'value': calculate_diff(dict1[key], dict2[key])
-        })
+                'key': key,
+                'state': 'NESTED',
+                'value': calculate_diff(dict1[key], dict2[key])
+            })
         elif dict1[key] != dict2[key]:
             result.append({
-        'key': key,
-        'state': 'updated',
-        'old_value': dict1[key],
-        'new_value': dict2[key],
-    })
+            'key': key,
+            'state': 'updated',
+            'old_value': dict1[key],
+            'new_value': dict2[key],
+        })
         else:
             result.append({
-    'key': key,
-    'state': 'pass',
-    'value': dict1[key]
-})
+            'key': key,
+            'state': 'pass',
+            'value': dict1[key]
+        })
     return result
 
 
 def generate_diff(data1, data2):
     keys = calculate_diff(data1, data2)
-    #print(keys)
-    my_print(keys, data1, data2)
+    result = my_print(keys)
+    print(result)
     
 
-
-
-def my_print(keys, data1, data2):    
-    new_value = data2.get('new_value')
-    old_value = data1.get('old_value')
+def my_print(keys, space = ''):
     result_str = '{\n'
+    #print(keys, '\n')
     for key in keys:
         if key['state'] == 'plus':
-            result_str += f' + {key}: {data2.get(key)}\n'
+            result_str += f'{space} + {key["key"]}: {key["value"]}\n'
         elif key['state'] == 'minus':
-            result_str += f' - {key}: {data1.get(key)}\n'
+            result_str += f'{space} - {key["key"]}: {key["value"]}\n'
         elif key['state'] == 'pass':
-            result_str += f'   {key}: {data1.get(key)}\n'
+            result_str += f'{space}   {key["key"]}: {key["value"]}\n'
         elif key['state'] == 'NESTED':
-            #my_print(keys, data1.get(key), data2.get(key))
-            #print(data1,key)
-            print('DATA 1', data1)
-            print('KEY', key)
-        elif key['updated']:
-            result_str += f' + {key}: {data2.get(new_value)}\n'
-            result_str += f' - {key}: {data1.get(old_value)}\n'
-    return result_str + '}'
-    
+            result_str += f'   {key["key"]}: '
+            res = my_print(key['CHILDREN'], space = '     ')
+            result_str += res 
+        elif key['state'] == 'updated':
+            result_str += f'{space} {key["key"]}: {key["new_value"]}\n' #+
+            result_str += f'{space} {key["key"]}: {key["old_value"]}\n' #-
+    return result_str + '\n'
