@@ -45,18 +45,17 @@ def calculate_diff(dict1, dict2):
 
 def generate_diff(data1, data2):
     keys = calculate_diff(data1, data2)
-    result = my_print(keys)
-    print(result)
+    print(keys)
+    #result = my_print(keys)
+    #print(result)
     
 
-def my_print(keys, space = ''):
+def my_print(keys, space = '    '):
     result_str = ''
-    depth = '    '
-    #print(keys, '\n')
     for key in keys:
         if key['state'] == 'NESTED':
             result_str += f'{space}   {key["key"]}: ' + '{\n'
-            res = my_print(key['CHILDREN'], space + depth)
+            res = my_print(key['CHILDREN'], space  + space)
             result_str += res
         elif key['state'] == 'updated':
             result_str += f'{space} - {key["key"]}: {key["new_value"]}\n'
