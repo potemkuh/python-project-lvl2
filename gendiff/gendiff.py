@@ -74,12 +74,13 @@ def generate_diff(data1, data2):
 
 def my_print(keys, depth = 0):
     indent = make_indent(depth)
-    result_str = f'{indent}' + '{'
+    result_str = ''
     for key in keys:
         if key['state'] == 'NESTED':
             result_str += f'{indent}   {key["key"]}: ' + '{\n'
             res = my_print(key['CHILDREN'], depth + 1)
             result_str += res 
+            result_str += '{0}{1}\n'.format(indent * 2, '}')
         elif key['state'] == 'updated':
             result_str += f'{indent} - {key["key"]}: {to_string(key["new_value"], depth)}\n'
             result_str += f'{indent} - {key["key"]}: {to_string(key["old_value"], depth)}\n'
