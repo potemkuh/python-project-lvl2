@@ -24,7 +24,7 @@ def to_string(value_to_str, depth):
 
     return value_to_str
 
-def make_indent(depth, indent_size=4, indent_type=' '):
+def make_indent(depth, indent_size=2, indent_type=' '):
     return indent_type * indent_size * depth
 
 def calculate_diff(dict1, dict2):
@@ -55,7 +55,13 @@ def calculate_diff(dict1, dict2):
                     'CHILDREN': calculate_diff(dict1[key], dict2[key]),
                 })
                 continue
-        
+        elif dict1[key] == dict2[key]:
+            result.append({
+            'key': key,
+            'state': 'notchanged',
+            'value': dict1[key],
+            })
+            continue
         result.append({
             'key': key,
             'state': 'updated',
@@ -73,19 +79,21 @@ def generate_diff(data1, data2):
     
 
 def my_print(keys, depth = 0):
-    indent = make_indent(depth)
+    indent = make_indent(depth + 1)
     result_str = ''
     for key in keys:
         if key['state'] == 'NESTED':
-            result_str += f'{indent}   {key["key"]}: ' + '{\n'
-            res = my_print(key['CHILDREN'], depth + 1)
+            result_str += f'{indent}  {key["key"]}: ' + '{\n'
+            res = my_print(key['CHILDREN'], depth + 2)
             result_str += res 
-            result_str += '{0}{1}\n'.format(indent * 2, '}')
+            result_str += f'{indent}' + '  }\n'
         elif key['state'] == 'updated':
-            result_str += f'{indent} - {key["key"]}: {to_string(key["new_value"], depth)}\n'
-            result_str += f'{indent} - {key["key"]}: {to_string(key["old_value"], depth)}\n'
+            result_str += f'{indent}- {key["key"]}: {to_string(key["old_value"], depth)}\n'
+            result_str += f'{indent}+ {key["key"]}: {to_string(key["new_value"], depth)}\n'
+        elif key['state'] == 'notchanged':
+            result_str += f'{indent}  {key["key"]}: {to_string(key["value"], depth)}\n'
         elif key['state'] == 'plus':
-            result_str += f'{indent} + {key["key"]}: {to_string(key["value"], depth)}\n'
+            result_str += f'{indent}+ {key["key"]}: {to_string(key["value"], depth)}\n'
         elif key['state'] == 'minus':
-            result_str += f'{indent} - {key["key"]}: {to_string(key["value"], depth)}\n'
+            result_str += f'{indent}- {key["key"]}: {to_string(key["value"], depth)}\n'
     return result_str
