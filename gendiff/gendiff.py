@@ -24,7 +24,7 @@ def to_string(value_to_str, depth):
 
     return value_to_str
 
-def make_indent(depth, indent_size=2, indent_type=' '):
+def make_indent(depth, indent_size=4, indent_type=' '):
     return indent_type * indent_size * depth
 
 def calculate_diff(dict1, dict2):
@@ -75,6 +75,7 @@ def calculate_diff(dict1, dict2):
 def generate_diff(data1, data2):
     keys = calculate_diff(data1, data2)
     result = my_print(keys)
+    result = '{\n' + result + '\n}'
     print(result)
     
 
@@ -83,8 +84,8 @@ def my_print(keys, depth = 0):
     result_str = ''
     for key in keys:
         if key['state'] == 'NESTED':
-            result_str += f'{indent}  {key["key"]}: ' + '{\n'
-            res = my_print(key['CHILDREN'], depth + 2)
+            result_str += f'{indent}{key["key"]}: ' + '{\n'
+            res = my_print(key['CHILDREN'], depth + 1)
             result_str += res 
             result_str += f'{indent}' + '  }\n'
         elif key['state'] == 'updated':
