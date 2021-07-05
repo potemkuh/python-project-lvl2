@@ -1,3 +1,6 @@
+from gendiff.stylish import plain
+
+
 ADDED = 'added'
 CHILDREN = 'children'
 KEY = 'key'
@@ -146,11 +149,14 @@ def calculate_diff(data1, data2):
 
     return result_diff
 
-def generate_diff(data1, data2):
+
+def generate_diff(data1, data2, format_name = 'render_stylish'):
     diff = {
         TYPE: ORIGIN,
         CHILDREN: calculate_diff(data1, data2),
     }
-    res = render_stylish(diff)
-    print(res)
+    if format_name == 'render_stylish':
+        res = render_stylish(diff)
+    elif format_name == 'render_plain':
+        res = plain.render_plain(diff)
     
