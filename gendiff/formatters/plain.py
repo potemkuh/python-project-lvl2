@@ -1,13 +1,14 @@
-ADDED = 'added'
-CHILDREN = 'children'
-KEY = 'key'
-NESTED = 'nested'
-ORIGIN = 'origin'
-REMOVED = 'removed'
-TYPE = 'type'
-UNCHANGED = 'unchanged'
-UPDATED = 'updated'
-VALUE = 'value'
+from gendiff.constans import (
+    ADDED,
+    CHILDREN,
+    KEY,
+    NESTED,
+    ORIGIN,
+    REMOVED,
+    TYPE,
+    UNCHANGED,
+    UPDATED,
+)
 
 def to_list(items):
     items_list = []
@@ -36,7 +37,7 @@ def render_plain(diff):
         return rows
 
     if diff_type == ADDED:
-        return "Property '{0}' was added with value: {1}".format(key, value = to_string(diff['value']))
+        return "Property '{0}' was added with value: {1}".format(key, to_string(diff['value']))
 
 
     if diff_type == REMOVED:
@@ -51,7 +52,7 @@ def render_plain(diff):
         return []
 
 
-def to_string(value_to_str, depth):
+def to_string(value_to_str):
     if value_to_str is None:
         return 'null'
 
