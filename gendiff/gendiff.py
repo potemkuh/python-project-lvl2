@@ -1,15 +1,87 @@
+ADDED = 'added'
+CHILDREN = 'children'
+KEY = 'key'
+NESTED = 'nested'
+ORIGIN = 'origin'
+REMOVED = 'removed'
+TYPE = 'type'
+UNCHANGED = 'unchanged'
+UPDATED = 'updated'
+VALUE = 'value'
+
+
 def create_list_key(dict1, dict2):
     keys1 = list(dict1.keys())
     keys2 = list(dict2.keys())
     if keys1 == keys2:
         return keys1
+
     return set(keys1 + keys2)
+
+def render_stylish(diff, depth=0):
+    diff_type = diff[TYPE]
+    key = diff.get(KEY)
+    indent = make_indent(depth)
+    children = diff.get(CHILDREN)
+
+    if diff_type == ORIGIN:
+        rows = ['{0}{1}\n'.format(
+            indent,
+            render_stylish(child, depth),
+        ) for child in children]
+        return '{{\n{0}}}'.format(''.join(rows))
+
+    if diff_type == NESTED:
+        rows = ['{0}\n'.format(
+            render_stylish(child, depth + 1),
+        ) for child in children]
+        return '{0}    {1}: {{\n{2}{3}}}'.format(
+            indent,
+            key,
+            ''.join(rows),
+            make_indent(depth + 1),
+        )
+
+    if diff_type == ADDED:
+        return '{0}  + {1}: {2}'.format(
+            indent,
+            key,
+            to_string(diff['value'], depth),
+        )
+
+    if diff_type == REMOVED:
+        return '{0}  - {1}: {2}'.format(
+            indent,
+            key,
+            to_string(diff['value'], depth),
+        )
+
+    if diff_type == UPDATED:
+        str1 = '{0}  - {1}: {2}'.format(
+            indent,
+            key,
+            to_string(diff['old_value'], depth),
+        )
+        str2 = '{0}  + {1}: {2}'.format(
+            indent,
+            key,
+            to_string(diff['new_value'], depth),
+        )
+        return '\n'.join([str1, str2])
+
+    if diff_type == UNCHANGED:
+        return '{0}    {1}: {2}'.format(
+            indent,
+            key,
+            to_string(diff['value'], depth),
+        )
 
 def to_string(value_to_str, depth):
     if value_to_str is None:
         return 'null'
 
     if isinstance(value_to_str, bool):
+
         return str(value_to_str).lower()
 
     if isinstance(value_to_str, dict):
@@ -25,76 +97,60 @@ def to_string(value_to_str, depth):
     return value_to_str
 
 def make_indent(depth, indent_size=4, indent_type=' '):
+
     return indent_type * indent_size * depth
 
-def calculate_diff(dict1, dict2):
-    keys = create_list_key(dict1, dict2)
-    result = list()
-    for key in sorted(keys):    
-        if key not in dict2:
-            result.append({
-                'key': key,
-                'state': 'minus',
-                'value': dict1[key]
+def calculate_diff(data1, data2):
+    keys = create_list_key(data1, data2)
+    result_diff = list()
+    for key in sorted(keys):
+        if key not in data1:
+            result_diff.append({
+                TYPE: ADDED,
+                KEY: key,
+                VALUE: data2[key],
             })
             continue
 
-        elif key not in dict1:
-            result.append({
-                'key': key,
-                'state': 'plus',
-                'value': dict2[key]
+        if key not in data2:
+            result_diff.append({
+                TYPE: REMOVED,
+                KEY: key,
+                VALUE: data1[key],
             })
             continue
 
-        elif isinstance(dict1[key], dict):
-            if isinstance(dict2[key], dict):
-                result.append({
-                    'key': key,
-                    'state': 'NESTED',                    
-                    'CHILDREN': calculate_diff(dict1[key], dict2[key]),
+        if isinstance(data1[key], dict):
+            if isinstance(data2[key], dict):
+                result_diff.append({
+                    TYPE: NESTED,
+                    KEY: key,
+                    CHILDREN: calculate_diff(data1[key], data2[key]),
                 })
                 continue
-        elif dict1[key] == dict2[key]:
-            result.append({
-            'key': key,
-            'state': 'notchanged',
-            'value': dict1[key],
+
+        if data1[key] != data2[key]:
+            result_diff.append({
+                TYPE: UPDATED,
+                KEY: key,
+                'old_value': data1[key],
+                'new_value': data2[key],
             })
             continue
-        result.append({
-            'key': key,
-            'state': 'updated',
-            'old_value': dict1[key],
-            'new_value': dict2[key],
-            })
-            
-    return result
 
+        result_diff.append({
+            TYPE: UNCHANGED,
+            KEY: key,
+            VALUE: data1[key],
+        })
+
+    return result_diff
 
 def generate_diff(data1, data2):
-    keys = calculate_diff(data1, data2)
-    result = my_print(keys)
-    result = '{\n' + result + '\n}'
-    print(result)
+    diff = {
+        TYPE: ORIGIN,
+        CHILDREN: calculate_diff(data1, data2),
+    }
+    res = render_stylish(diff)
+    print(res)
     
-
-def my_print(keys, depth = 0):
-    indent = make_indent(depth + 1)
-    result_str = ''
-    for key in keys:
-        if key['state'] == 'NESTED':
-            result_str += f'{indent}{key["key"]}: ' + '{\n'
-            res = my_print(key['CHILDREN'], depth + 1)
-            result_str += res 
-            result_str += f'{indent}' + '  }\n'
-        elif key['state'] == 'updated':
-            result_str += f'{indent}- {key["key"]}: {to_string(key["old_value"], depth)}\n'
-            result_str += f'{indent}+ {key["key"]}: {to_string(key["new_value"], depth)}\n'
-        elif key['state'] == 'notchanged':
-            result_str += f'{indent}  {key["key"]}: {to_string(key["value"], depth)}\n'
-        elif key['state'] == 'plus':
-            result_str += f'{indent}+ {key["key"]}: {to_string(key["value"], depth)}\n'
-        elif key['state'] == 'minus':
-            result_str += f'{indent}- {key["key"]}: {to_string(key["value"], depth)}\n'
-    return result_str
