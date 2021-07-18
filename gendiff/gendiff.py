@@ -1,4 +1,4 @@
-from gendiff.formatters import stylish, plain, json
+from gendiff.formatters import render_stylish, render_plain, render_json
 from gendiff.diff import create_build
 import json
 import yaml 
@@ -22,9 +22,9 @@ def build_diff(data1, data2, format_name = 'stylish'):
         CHILDREN: create_build(data1, data2),
     }
     if format_name == 'stylish':
-        res = stylish.render_stylish(diff)
+        res = render_stylish.render_stylish(diff)
     elif format_name == 'plain':
-        res = plain.render_plain(diff)
+        res = render_plain.render_plain(diff)
     else:
-        res = json.render_json(diff)
+        res = render_json.render_json(diff)
     return res
