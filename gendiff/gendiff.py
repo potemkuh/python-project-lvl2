@@ -9,7 +9,7 @@ from gendiff.constans import (
 )
 
 
-def generate_diff(f1, f2):
+def generate_diff(f1, f2, format_name ='stylish'):
     if f1.endswith('.json') and f2.endswith('.json'):
         print(build_diff(json.load(open(f1)), json.load(open(f2)), format))
     if f1.endswith('.yml') and f2.endswith('.yml'):
