@@ -9,5 +9,6 @@ def main():
     diff = generate_diff(f1, f2, format)
     print(diff)
 
+
 if __name__ == '__main__':
     main()

@@ -10,6 +10,7 @@ from gendiff.constans import (
     UPDATED,
 )
 
+
 def render_stylish(diff, depth=0):
     diff_type = diff[TYPE]
     key = diff.get(KEY)
@@ -68,6 +69,7 @@ def render_stylish(diff, depth=0):
             to_string(diff['value'], depth),
         )
 
+
 def to_string(value_to_str, depth):
     if value_to_str is None:
         return 'null'
@@ -87,6 +89,7 @@ def to_string(value_to_str, depth):
         return '{{\n{0}{1}}}'.format(''.join(result), indent)
 
     return value_to_str
+
 
 def make_indent(depth, indent_size=4, indent_type=' '):
 

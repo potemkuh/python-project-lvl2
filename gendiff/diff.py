@@ -10,6 +10,7 @@ from gendiff.constans import (
     UPDATED,
 )
 
+
 def create_list_key(dict1, dict2):
     keys1 = list(dict1.keys())
     keys2 = list(dict2.keys())
@@ -17,6 +18,7 @@ def create_list_key(dict1, dict2):
         return keys1
 
     return set(keys1 + keys2)
+
 
 def create_build(data1, data2):
     keys = create_list_key(data1, data2)

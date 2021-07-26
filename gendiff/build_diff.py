@@ -6,7 +6,8 @@ from gendiff.constans import (
     TYPE,
 )
 
-def build_diff(data1, data2, format_name = 'stylish'):
+
+def build_diff(data1, data2, format_name='stylish'):
     diff = {
         TYPE: ORIGIN,
         CHILDREN: create_build(data1, data2),
