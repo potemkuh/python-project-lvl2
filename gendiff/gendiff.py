@@ -1,14 +1,17 @@
-from gendiff.build_diff import build_diff
+from gendiff.diff import build_diff
 import json
 import yaml
 
 
-def generate_diff(f1, f2, format='stylish'):
-    if f1.endswith('.json') and f2.endswith('.json'):
-        result = build_diff(json.load(open(f1)), json.load(open(f2)), format)
+def format_selection(data1, data2):
+    if data1.endswith('.json') and data2.endswith('.json'):
+        return json.load(open(data1)), json.load(open(data2))
 
-    if f1.endswith('.yml') and f2.endswith('.yml'):
-        result = build_diff(
-            yaml.safe_load(open(f1)),
-            yaml.safe_load(open(f2)), format)
+    if data1.endswith('.yml') and data2.endswith('.yml'):
+        return yaml.safe_load(open(data1)), yaml.safe_load(open(data2))
+
+        
+def generate_diff(first_file, second_file, format='stylish'):
+    part = format_selection(first_file, second_file)
+    result = build_diff(part[0], part[1], format)
     return result

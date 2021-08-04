@@ -75,7 +75,6 @@ def to_string(value_to_str, depth):
         return 'null'
 
     if isinstance(value_to_str, bool):
-
         return str(value_to_str).lower()
 
     if isinstance(value_to_str, dict):
@@ -87,10 +86,8 @@ def to_string(value_to_str, depth):
                 '{0}    {1}: {2}\n'.format(indent, key, str_value),
             )
         return '{{\n{0}{1}}}'.format(''.join(result), indent)
-
     return value_to_str
 
 
 def make_indent(depth, indent_size=4, indent_type=' '):
-
     return indent_type * indent_size * depth

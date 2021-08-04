@@ -1,3 +1,4 @@
+from gendiff.formatters import render_stylish, render_plain, render_json
 from gendiff.constans import (
     ADDED,
     CHILDREN,
@@ -7,7 +8,9 @@ from gendiff.constans import (
     TYPE,
     UNCHANGED,
     VALUE,
+    TYPE,
     UPDATED,
+    ORIGIN,
 )
 
 
@@ -65,3 +68,20 @@ def create_build(data1, data2):
         })
 
     return result_diff
+
+
+def choice_of_style(diff, format_name):
+    if format_name == 'stylish':
+        res = render_stylish.render_stylish(diff)
+    elif format_name == 'plain':
+        res = render_plain.render_plain(diff)
+    elif format_name == 'json':
+        res = render_json.render_json(diff)
+    return res
+
+def build_diff(data1, data2, format_name='stylish'):
+    diff = {
+        TYPE: ORIGIN,
+        CHILDREN: create_build(data1, data2),
+    }
+    return choice_of_style(diff, format_name)

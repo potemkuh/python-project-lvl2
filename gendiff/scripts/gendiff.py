@@ -1,12 +1,12 @@
-from gendiff.get_args import args
+from gendiff.get_parse import get_parse
 from gendiff.gendiff import generate_diff
 
 
 def main():
-    f1 = args().first_file
-    f2 = args().second_file
-    format = args().format
-    diff = generate_diff(f1, f2, format)
+    first_file = get_parse().first_file
+    second_file = get_parse().second_file
+    format = get_parse().format
+    diff = generate_diff(first_file, second_file, format)
     print(diff)
 
 
