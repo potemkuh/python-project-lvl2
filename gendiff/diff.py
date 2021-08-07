@@ -8,7 +8,6 @@ from gendiff.constans import (
     TYPE,
     UNCHANGED,
     VALUE,
-    TYPE,
     UPDATED,
     ORIGIN,
 )
@@ -78,6 +77,7 @@ def choice_of_style(diff, format_name):
     elif format_name == 'json':
         res = render_json.render_json(diff)
     return res
+
 
 def build_diff(data1, data2, format_name='stylish'):
     diff = {
