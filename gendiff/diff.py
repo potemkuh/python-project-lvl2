@@ -1,4 +1,3 @@
-from gendiff.format import choice_format
 from gendiff.constans import (
     ADDED,
     CHILDREN,

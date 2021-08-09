@@ -4,6 +4,7 @@ import pytest
 
 test_cases = ['yml', 'json']
 
+
 @pytest.mark.parametrize('test_format', test_cases)
 def test_gendiff_json(test_format):
     data1 = f'tests/fixtures/flat_files1.{test_format}'
