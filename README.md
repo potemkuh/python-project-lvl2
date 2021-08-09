@@ -19,13 +19,18 @@ json output (--format=json)
 
 Flat format output json
 [![asciicast](https://asciinema.org/a/5prRb1SRqrHqO3UvyJlwtfceJ.svg)](https://asciinema.org/a/5prRb1SRqrHqO3UvyJlwtfceJ)
+
 Flat format output yml
 [![asciicast](https://asciinema.org/a/5YMosZ8KjHOeRwyZ7D7iZdOMs.svg)](https://asciinema.org/a/5YMosZ8KjHOeRwyZ7D7iZdOMs)
+
 Output help
 [![asciicast](https://asciinema.org/a/ZkBAqrBtiTD9JtYucS7f69TDt.svg)](https://asciinema.org/a/ZkBAqrBtiTD9JtYucS7f69TDt)
+
 Output stylish
 [![asciicast](https://asciinema.org/a/SRqBU2OVQ2OVQqCCR6IcaL5Mf.svg)](https://asciinema.org/a/SRqBU2OVQ2OVQqCCR6IcaL5Mf)
+
 Output plain
 [![asciicast](https://asciinema.org/a/WloqmclDKzXXt9H7lgCF9mWuV.svg)](https://asciinema.org/a/WloqmclDKzXXt9H7lgCF9mWuV)
+
 Output json
 [![asciicast](https://asciinema.org/a/cVoTqV37BfEsYU6cXxAIoSGe7.svg)](https://asciinema.org/a/cVoTqV37BfEsYU6cXxAIoSGe7)
