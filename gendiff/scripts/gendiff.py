@@ -3,9 +3,10 @@ from gendiff.gendiff import generate_diff
 
 
 def main():
-    first_file = get_parse().first_file
-    second_file = get_parse().second_file
-    format = get_parse().format
+    args = get_parse()
+    first_file = args.first_file
+    second_file = args.second_file
+    format = args.format
     diff = generate_diff(first_file, second_file, format)
     print(diff)
 

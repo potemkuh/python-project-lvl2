@@ -1,4 +1,5 @@
 from gendiff.diff import build_diff
+from gendiff.format import choice_format
 import json
 import yaml
 
@@ -13,5 +14,6 @@ def format_selection(data1, data2):
 
 def generate_diff(first_file, second_file, format='stylish'):
     part = format_selection(first_file, second_file)
-    result = build_diff(part[0], part[1], format)
-    return result
+    print(part)
+    diff = build_diff(part[0], part[1])
+    return choice_format(diff, format)

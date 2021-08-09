@@ -1,4 +1,4 @@
-from gendiff.formatters import render_stylish, render_plain, render_json
+from gendiff.format import choice_format
 from gendiff.constans import (
     ADDED,
     CHILDREN,
@@ -34,7 +34,7 @@ def create_build(data1, data2):
             })
             continue
 
-        if key not in data2:
+        elif key not in data2:
             result_diff.append({
                 TYPE: REMOVED,
                 KEY: key,
@@ -42,7 +42,7 @@ def create_build(data1, data2):
             })
             continue
 
-        if isinstance(data1[key], dict):
+        elif isinstance(data1[key], dict):
             if isinstance(data2[key], dict):
                 result_diff.append({
                     TYPE: NESTED,
@@ -51,7 +51,7 @@ def create_build(data1, data2):
                 })
                 continue
 
-        if data1[key] != data2[key]:
+        elif data1[key] != data2[key]:
             result_diff.append({
                 TYPE: UPDATED,
                 KEY: key,
@@ -68,20 +68,10 @@ def create_build(data1, data2):
 
     return result_diff
 
-
-def choice_of_style(diff, format_name):
-    if format_name == 'stylish':
-        res = render_stylish.render_stylish(diff)
-    elif format_name == 'plain':
-        res = render_plain.render_plain(diff)
-    elif format_name == 'json':
-        res = render_json.render_json(diff)
-    return res
-
-
-def build_diff(data1, data2, format_name='stylish'):
+def build_diff(data1, data2):
     diff = {
         TYPE: ORIGIN,
         CHILDREN: create_build(data1, data2),
     }
-    return choice_of_style(diff, format_name)
+    return diff
+
