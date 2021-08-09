@@ -34,7 +34,7 @@ def create_build(data1, data2):
             })
             continue
 
-        elif key not in data2:
+        if key not in data2:
             result_diff.append({
                 TYPE: REMOVED,
                 KEY: key,
@@ -42,7 +42,7 @@ def create_build(data1, data2):
             })
             continue
 
-        elif isinstance(data1[key], dict):
+        if isinstance(data1[key], dict):
             if isinstance(data2[key], dict):
                 result_diff.append({
                     TYPE: NESTED,
@@ -51,7 +51,7 @@ def create_build(data1, data2):
                 })
                 continue
 
-        elif data1[key] != data2[key]:
+        if data1[key] != data2[key]:
             result_diff.append({
                 TYPE: UPDATED,
                 KEY: key,
@@ -68,10 +68,10 @@ def create_build(data1, data2):
 
     return result_diff
 
+
 def build_diff(data1, data2):
     diff = {
         TYPE: ORIGIN,
         CHILDREN: create_build(data1, data2),
     }
     return diff
-

@@ -14,6 +14,5 @@ def format_selection(data1, data2):
 
 def generate_diff(first_file, second_file, format='stylish'):
     part = format_selection(first_file, second_file)
-    print(part)
     diff = build_diff(part[0], part[1])
     return choice_format(diff, format)
