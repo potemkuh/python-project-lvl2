@@ -4,15 +4,16 @@ import json
 import yaml
 
 
-def format_selection(data1, data2):
-    if data1.endswith('.json') and data2.endswith('.json'):
-        return json.load(open(data1)), json.load(open(data2))
+def format_selection(file):
+    if file.endswith('.json'):
+        return json.load(open(file))
 
-    if data1.endswith('.yml') and data2.endswith('.yml'):
-        return yaml.safe_load(open(data1)), yaml.safe_load(open(data2))
+    if file.endswith('.yml'):
+        return yaml.safe_load(open(file))
 
 
 def generate_diff(first_file, second_file, format='stylish'):
-    part = format_selection(first_file, second_file)
-    diff = build_diff(part[0], part[1])
+    data1 = format_selection(first_file)
+    data2 = format_selection(second_file)
+    diff = build_diff(data1, data2)
     return choice_format(diff, format)
